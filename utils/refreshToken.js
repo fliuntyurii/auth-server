@@ -10,7 +10,6 @@ const refreshToken = async (user, token, time) => {
       }
     })
   }
-
   await User.findByIdAndUpdate(user._id, 
     { 
       tokens: [ 
