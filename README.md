@@ -1,3 +1,4 @@
+.env
 PORT=3000
 BASE_URL=localhost:3000/api/
 JWT_SECRET=jwtSecret

@@ -4,7 +4,6 @@ const validator = require('validator');
 const crypto = require("crypto");
 
 const User = require('../models/User');
-const CustomError = require('../errors');
 const refreshToken = require('../utils/refreshToken');
 const removeToken = require('../utils/removeToken');
 
@@ -14,11 +13,10 @@ const signup = async (req, res) => {
 
   const idAlreadyExists = await User.findOne({ email });
   if (idAlreadyExists) {
-    throw new CustomError.BadRequestError('Email already exists');
+    res.status(StatusCodes.BAD_REQUEST).json({ message: 'Email already exists' })
   }
-
   if (!validator.isEmail(email) && !validator.isMobilePhone(email)) {
-    throw new CustomError.BadRequestError('Please provide valid email');
+    res.status(StatusCodes.BAD_REQUEST).json({ message: 'Please provide valid email' })
   }
 
   const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_LIFETIME });  
@@ -32,17 +30,17 @@ const signup = async (req, res) => {
 const signin = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    throw new CustomError.BadRequestError('Please provide email and password');
+    res.status(StatusCodes.BAD_REQUEST).json({ message: 'Please provide email and password' })
   }
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Invalid Credentials' })
   }
 
   const isPasswordCorrect = await user.comparePassword(password);
   if (!isPasswordCorrect) {
-    throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Invalid Credentials' })
   }
 
   const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_LIFETIME });

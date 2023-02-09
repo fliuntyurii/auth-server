@@ -6,12 +6,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide id'],
   },
-  email_type: String,
   email: {
     type: String,
     unique: true,
     required: [true, 'Please provide email'],
   },
+  email_type: String,
   password: {
     type: String,
     required: [true, 'Please provide password'],
